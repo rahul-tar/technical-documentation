@@ -30,7 +30,7 @@ Figure 1 provides a high-level view of HUMAINE&#39;s multi-modal multi-agent neg
  
 _Figure 1. Simplified view of HUMAINE&#39;s multi-agent multi-modal architecture._
 
-The cloud on the left-hand side of this figure depicts the physical environment, containing the human negotiator H2 and two avatars A1 and A2. In that environment are various workers (provided by the HUMAINE platform) that collect audio and other sensor signals and process them into a representation of H2&#39;s utterance and certain aspects of H2&#39;s non-verbal behavior. The non-verbal behavior includes at a minimum an inference about the addressee – that is, the avatar who was addressed by the human, which is derived from head pose information based on camera data. In the future, it may also include information about human gestures and facial expressions.
+The cloud on the left-hand side of this figure depicts the physical environment, containing the human negotiator H2 and two avatars A1 and A2. In that environment are various workers (provided by the HUMAINE platform) that collect audio and other sensor signals and process them into a representation of H2&#39;s utterance and certain aspects of H2&#39;s non-verbal behavior. The non-verbal behavior includes at a minimum an inference about the addressee √ê that is, the avatar who was addressed by the human, which is derived from head pose information based on camera data. In the future, it may also include information about human gestures and facial expressions.
 
 The verbal and non-verbal behavior are collated and formatted by the Rich Transcript Worker into a JSON structure that contains the utterance, addressee, speaker, and (optionally) additional behavioral information. It delivers this structure to all of the agents by calling their /receiveMessage APIs.
 
@@ -48,10 +48,7 @@ The Human Assistant service is a tool that human negotiators can use to aid them
 
 There are three players in each round: two seller agents and a human buyer. Each player strives to maximize their utility during each round. Sellers strive to sell goods for a price as far above their unit cost as possible, while buyers seek to use a budget given to them at the beginning of the round to buy goods from which they can make the most valuable set of cakes or pancakes that they&#39;re able to make from their purchases. In order to maximize the number cakes and/or pancakes that they can make, buyers have an incentive to maximize the number of goods they can purchase, and thus they must try to purchase goods as cheaply as they can.
 
-The seller&#39;s utility function is expressed in terms of a unit cost c
-
-# g
- for each of several different goods g that it can offer to the buyer. The set of goods is as follows:
+The seller&#39;s utility function is expressed in terms of a unit cost c_g for each of several different goods g that it can offer to the buyer. The set of goods is as follows:
 
 - Eggs (unit: each)
 - Milk (unit: cup)
@@ -61,25 +58,9 @@ The seller&#39;s utility function is expressed in terms of a unit cost c
 - Vanilla (unit: teaspoon)
 - Blueberries (unit: packe
 
-When an agent sells a bundle {n
-# egg
-, n
-# milk
-, n
-# sugar
-, …} consisting of n
-# g
+When an agent sells a bundle {n_egg, n_milk, n_sugar, ...} consisting of n_g items of good g for a price p, the agent&#39;s utility can be computed as
 
-# 1
- items of good g for a price p, the agent&#39;s utility can be computed as
-
-Seller utility = p - Sum
-
-# g
- n
-# g
-c
-# g
+Seller utility = p - Sum_g n_g c_g
 
 The buyer&#39;s utility is based upon the number of cakes and pancakes they can make from the goods they purchase during the round, with some extra value placed on extra flavorings: chocolate, vanilla and blueberries. The mapping from raw goods to baked goods is a fixed recipe that is known to all players. Specifically, the recipes are:
 
@@ -110,7 +91,7 @@ Just before the round starts, each player is sent a randomly-generated utility f
 
 - their utility function
 - round parameters (such as the round duration and the length of the warmup period)
-- the name by which the agent will be known (Celia – represented as a female avatar with a female voice, or Watson – represented as a male avatar with a male voice). Agent developers may or may not decide to generate negotiation bids in such a way as to reflect gender.
+- the name by which the agent will be known (Celia √ê represented as a female avatar with a female voice, or Watson √ê represented as a male avatar with a male voice). Agent developers may or may not decide to generate negotiation bids in such a way as to reflect gender.
 
 An example seller agent that implements this API and others referred to in this Technical Details section, called agent-jok, is provided with the HUMAINE code distribution.
 
@@ -127,7 +108,7 @@ Once the round has begun, the human buyer starts by requesting a bundle of one o
 - Celia, I&#39;ll buy 2 cups of flour, 2 cups of sugar, and 2 cups of milk from you for $3.
 - Watson, can you sell me some milk and sugar?
 
-The seller agent will receive utterances as a call to a /receiveMessage API that they must implement. Details and example code are provided. Upon receiving the message, the seller agent should try to interpret its meaning, i.e. ascertain the type of negotiation act (offer/counteroffer, reject, accept, etc.) and the associated parameters. To do this, the seller agent should try to anticipate different ways in which buyers might start a negotiation and strive to recognize their intent accurately. One service you may want to consider using to aid in this task is Watson Assistant. The sample agent agent-jok uses this approach, and you are welcome to borrow that routine if you wish – just remember that you need to create your own IBM Cloud account, set up the Watson Assistant Service with your private API key and other information, and create your dialogue skill. You are welcome to start from the simple skill provided as JSON in the agent-jok code repository; you can upload this skill to our Watson Assistant Service instance.Note that human buyers will have an incentive to make themselves understood to the seller agents, so it is unlikely that they will deliberately express themselves in an obscure or confusing manner.
+The seller agent will receive utterances as a call to a /receiveMessage API that they must implement. Details and example code are provided. Upon receiving the message, the seller agent should try to interpret its meaning, i.e. ascertain the type of negotiation act (offer/counteroffer, reject, accept, etc.) and the associated parameters. To do this, the seller agent should try to anticipate different ways in which buyers might start a negotiation and strive to recognize their intent accurately. One service you may want to consider using to aid in this task is Watson Assistant. The sample agent agent-jok uses this approach, and you are welcome to borrow that routine if you wish √ê just remember that you need to create your own IBM Cloud account, set up the Watson Assistant Service with your private API key and other information, and create your dialogue skill. You are welcome to start from the simple skill provided as JSON in the agent-jok code repository; you can upload this skill to our Watson Assistant Service instance.Note that human buyers will have an incentive to make themselves understood to the seller agents, so it is unlikely that they will deliberately express themselves in an obscure or confusing manner.
 
 Once the agent has interpreted the message, it needs to consider whether and how to respond to it. As part of this task, the agent must implement a bidding algorithm that computes a bid or other negotiation act that is intended to maximize its utility over the course of the round. It may well want to store messages that it has received during the round to aid it in this task. In addition to receiving utterances from the human buyer, the agent will also receive (via the /receiveMessage API) a copy of negotiation messages exchanged between the human buyer and the other seller agent.
 
@@ -159,8 +140,6 @@ the following APIs, which are called on your agent by the Environment Orchestrat
 - POST /endRound. Informs the agent that the current round has ended. Beyond this point, no offers can be sent or received.
 - POST /receiveMessage. Receives a message, interprets it, decides how to respond (e.g. Accept, Reject, or counteroffer), and if it desires sends a separate message to the /relayMessage route of the environment orchestrator.
 - POST /receiveRejection. Signifies that the Environment Orchestrator has not accepted a message that the agent recently relayed to it.
-
-
 
 In order to communicate with the system, your agent must call the Environment Orchestrator&#39;s POST /relayMessage API.
 
