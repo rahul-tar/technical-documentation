@@ -325,115 +325,63 @@ The remainder of this section provides details about the input and output format
 
 Here is an example of the expected body that will be posted to /setUtility:
 
+```
 {
-
-  &quot;currencyUnit&quot;: &quot;USD&quot;,
-
-  &quot;utility&quot;: {
-
-    &quot;egg&quot;: {
-
-      &quot;type&quot;: &quot;unitcost&quot;,
-
-      &quot;unit&quot;: &quot;each&quot;,
-
-      &quot;parameters&quot;: {
-
-        &quot;unitcost&quot;: 0.32
-
+  "currencyUnit": "USD",
+  "utility": {
+    "egg": {
+      "type": "unitcost",
+      "unit": "each",
+      "parameters": {
+        "unitcost": 0.32
       }
-
     },
-
-    &quot;flour&quot;: {
-
-      &quot;type&quot;: &quot;unitcost&quot;,
-
-      &quot;unit&quot;: &quot;cup&quot;,
-
-      &quot;parameters&quot;: {
-
-        &quot;unitcost&quot;: 0.85
-
+    "flour": {
+      "type": "unitcost",
+      "unit": "cup",
+      "parameters": {
+        "unitcost": 0.85
       }
-
     },
-
-    &quot;sugar&quot;: {
-
-      &quot;type&quot;: &quot;unitcost&quot;,
-
-      &quot;unit&quot;: &quot;cup&quot;,
-
-      &quot;parameters&quot;: {
-
-        &quot;unitcost&quot;: 0.71
-
+    "sugar": {
+      "type": "unitcost",
+      "unit": "cup",
+      "parameters": {
+        "unitcost": 0.71
       }
-
     },
-
-    &quot;milk&quot;: {
-
-      &quot;type&quot;: &quot;unitcost&quot;,
-
-      &quot;unit&quot;: &quot;cup&quot;,
-
-      &quot;parameters&quot;: {
-
-        &quot;unitcost&quot;: 0.35
-
+    "milk": {
+      "type": "unitcost",
+      "unit": "cup",
+      "parameters": {
+        "unitcost": 0.35
       }
-
     },
-
-    &quot;chocolate&quot;: {
-
-      &quot;type&quot;: &quot;unitcost&quot;,
-
-      &quot;unit&quot;: &quot;ounce&quot;,
-
-      &quot;parameters&quot;: {
-
-        &quot;unitcost&quot;: 0.2
-
+    "chocolate": {
+      "type": "unitcost",
+      "unit": "ounce",
+      "parameters": {
+        "unitcost": 0.2
       }
-
     },
-
-    &quot;blueberry&quot;: {
-
-      &quot;type&quot;: &quot;unitcost&quot;,
-
-      &quot;unit&quot;: &quot;packet&quot;,
-
-      &quot;parameters&quot;: {
-
-        &quot;unitcost&quot;: 0.45
-
+    "blueberry": {
+      "type": "unitcost",
+      "unit": "packet",
+      "parameters": {
+        "unitcost": 0.45
       }
-
     },
-
-    &quot;vanilla&quot;: {
-
-      &quot;type&quot;: &quot;unitcost&quot;,
-
-      &quot;unit&quot;: &quot;teaspoon&quot;,
-
-      &quot;parameters&quot;: {
-
-        &quot;unitcost&quot;: 0.27
-
+    "vanilla": {
+      "type": "unitcost",
+      "unit": "teaspoon",
+      "parameters": {
+        "unitcost": 0.27
       }
-
     }
-
   },
-
-  &quot;name&quot;: &quot;Watson&quot;
-
+  "name": "Watson"
 }
+```
 
 You will want to store the utility so that you can use it to guide your responses during the active phase of the negotiation round, and you will want to store the name so that you can know when you are being addressed.
 
@@ -441,107 +389,90 @@ You will want to store the utility so that you can use it to guide your response
 
 You should respond with a JSON message of this form:
 
+```
 {
-
-    &quot;status&quot;: &quot;Acknowleged&quot;,
-
-    &quot;utility&quot;: \&lt;exact copy of utility info that was received in the POST body\&gt;
-
+    "status": "Acknowleged",
+    "utility": <exact copy of utility info that was received in the POST body>
 }
+```
 
-Or
+or 
 
+```
 {
-
-    &quot;status&quot;: &quot;Failed; no message body&quot;,
-
-    &quot;utility&quot;: null
-
+    "status": "Failed; no message body",
+    "utility": null
 }
+```
 
 ## POST /startRound
 
 Here is an example of the expected body that will be posted to /startRound:
 
+```
 {
-
-    &quot;roundDuration&quot;: 300,
-
-    &quot;roundNumber&quot;: 1,
-
-    &quot;timestamp&quot;: &quot;2020-02-23T06:27:10.282Z&quot;
-
+    "roundDuration": 300,
+    "roundNumber": 1,
+    "timestamp": "2020-02-23T06:27:10.282Z"
 }
+```
 
 You should respond with a JSON message of this form:
 
+```
 {
-
-    &quot;status&quot;: &quot;Acknowledged&quot;
-
+    "status": "Acknowledged"
 }
+```
 
 ## POST /endRound
 
 Here is an example of the expected body that will be posted to /endRound:
 
+```
 {
-
     roundNumber: 1,
-
-    &quot;timestamp&quot;: &quot;2020-02-23T06:32:10.282Z&quot;
-
+    "timestamp": "2020-02-23T06:32:10.282Z"
 }
+```
 
 You should respond with a JSON message of this form:
 
+```
 {
-
-    &quot;status&quot;: &quot;Acknowledged&quot;
-
+    "status": "Acknowledged"
 }
+```
 
 ## POST /receiveMessage
 
 Here is an example of the expected body that will be posted to /receiveMessage:
 
+```
 {
-
-  &quot;speaker&quot;: &quot;Human&quot;,
-
-  &quot;addressee&quot;: &quot;Watson&quot;,
-
-  &quot;text&quot;: &quot;Watson I&#39;d like to buy 5 eggs for $2&quot;,
-
-  &quot;role&quot;: &quot;buyer&quot;,
-
-  &quot;environmentUUID&quot;: &quot;abcdefg&quot;,
-
-  &quot;timestamp&quot;: 1582184608849
-
+  "speaker": "Human",
+  "addressee": "Watson",
+  "text": "Watson I'd like to buy 5 eggs for $2",
+  "role": "buyer",
+  "environmentUUID": "abcdefg",
+  "timestamp": 1582184608849
 }
+```
 
 You should respond with a JSON message of this form:
 
+```
 {
-
-  &quot;status&quot;: &quot;Acknowledged&quot;,
-
-  &quot;interpretation&quot;: {
-
-    &quot;text&quot;: &quot;Watson I want to buy 5 eggs for $2&quot;,
-
-    &quot;speaker&quot;: &quot;Human&quot;,
-
-    &quot;addressee&quot;: &quot;Watson&quot;,
-
-    &quot;role&quot;: &quot;buyer&quot;,
-
-    &quot;environmentUUID&quot;: &quot;abcdefg&quot;
-
+  "status": "Acknowledged",
+  "interpretation": {
+    "text": "Watson I want to buy 5 eggs for $2",
+    "speaker": "Human",
+    "addressee": "Watson",
+    "role": "buyer",
+    "environmentUUID": "abcdefg"
   }
-
 }
+```
 
 When receiving a message via this API, the agent should consider whether it should respond, and if so it should POST a message to the system by POSTing to the **/relayMessage** API of the Environment Orchestrator. Details of the JSON that should be posted are provided below.
 
@@ -549,159 +480,110 @@ When receiving a message via this API, the agent should consider whether it shou
 
 Here is an example of the expected body that will be posted to /receiveRejection:
 
+
+```
 {
-
-  &quot;text&quot;: &quot;How about if I sell you 1 blueberry for 0.69 USD.&quot;,
-
-  &quot;speaker&quot;: &quot;Celia&quot;,
-
-  &quot;role&quot;: &quot;seller&quot;,
-
-  &quot;addressee&quot;: &quot;Human&quot;,
-
-  &quot;environmentUUID&quot;: &quot;abcdefg&quot;,
-
-  &quot;timeStamp&quot;: &quot;2020-02-23T02:22:39.152Z&quot;,
-
-  &quot;bid&quot;: {
-
-    &quot;quantity&quot;: {
-
-      &quot;blueberry&quot;: 1
-
+  "text": "How about if I sell you 1 blueberry for 0.69 USD.",
+  "speaker": "Celia",
+  "role": "seller",
+  "addressee": "Human",
+  "environmentUUID": "abcdefg",
+  "timeStamp": "2020-02-23T02:22:39.152Z",
+  "bid": {
+    "quantity": {
+      "blueberry": 1
     },
-
-    &quot;type&quot;: &quot;SellOffer&quot;,
-
-    &quot;price&quot;: {
-
-      &quot;unit&quot;: &quot;USD&quot;,
-
-      &quot;value&quot;: 0.69
-
+    "type": "SellOffer",
+    "price": {
+      "unit": "USD",
+      "value": 0.69
     }
-
   }
-
 }
+```
 
-You should respond with a JSON message of this form if the rejection message was received properly
+You should respond with a JSON message of this form if the rejection message was received properly:
 
+```
 {
-
-    &quot;status&quot;: &quot;acknowledged&quot;,
-
-    &quot;message&quot;: \*message\*
-
+    "status": "acknowledged",
+    "message": *message*
 }
+```
 
 Or this form if the rejection message failed for some reason:
 
+
+```
 {
-
-    &quot;status&quot;: &quot;Failed&quot;,
-
+    "status": "Failed",
 }
+```
+
 
 ## Sending a message to the Environment Orchestrator
 
 You should respond with a JSON message of this form if the rejection message was received properly. Upon receiving a message via /receiveMessage, the agent may decide that wishes to send a message back to the system. It does this by POSTing a JSON message of the following form to the **/relayMessage** API of the environment orchestrator. Please include with your agent an external file called appSettings.json that includes a field called serviceMap. The serviceMap field should list the environment orchestrator and provide its host and port, e.g.
 
+```
 {
-
-  &quot;serviceMap&quot;: {
-
-    &quot;environment-orchestrator&quot;: {
-
-      &quot;protocol&quot;: &quot;http&quot;,
-
-      &quot;host&quot;: &quot;localhost&quot;,
-
-      &quot;port&quot;: 14010
-
+    "serviceMap": {
+        "environment-orchestrator": {
+            "protocol": "http",
+            "host": "localhost",
+            "port": 14010
+        }
     }
-
-  }
-
 }
+```
 
 This will allow the tournament administrators to modify this field if necessary in order to point to the right address.
 
 The body of the POST to **/relayMessage** should look as follows:
 
+```
 {
-
-  &quot;text&quot;: &quot;How about if I sell you 5 egg for 3.73 USD.&quot;,
-
-  &quot;speaker&quot;: &quot;Watson&quot;,
-
-  &quot;role&quot;: &quot;seller&quot;,
-
-  &quot;addressee&quot;: &quot;Human&quot;,
-
-  &quot;environmentUUID&quot;: &quot;abcdefg&quot;,
-
-  &quot;timeStamp&quot;: &quot;2020-02-20T08:08:05.825Z&quot;,
-
-  &quot;bid&quot;: {
-
-    &quot;quantity&quot;: {
-
-      &quot;egg&quot;: 5
-
+  "text": "How about if I sell you 5 egg for 3.73 USD.",
+  "speaker": "Watson",
+  "role": "seller",
+  "addressee": "Human",
+  "environmentUUID": "abcdefg",
+  "timeStamp": "2020-02-20T08:08:05.825Z",
+  "bid": {
+    "quantity": {
+      "egg": 5
     },
-
-    &quot;type&quot;: &quot;SellOffer&quot;,
-
-    &quot;price&quot;: {
-
-      &quot;unit&quot;: &quot;USD&quot;,
-
-      &quot;value&quot;: 3.73
-
+    "type": "SellOffer",
+    "price": {
+      "unit": "USD",
+      "value": 3.73
     }
-
   }
-
 }
+```
 
 You will receive an acknowledgment back, of the form:
 
+```
 {
-
-    &quot;status&quot;: &quot;Acknowledged&quot;,
-
-    &quot;allResponses&quot;: [
-
+    "status": "Acknowledged",
+    "allResponses": [
         {
-
-            &quot;msgType&quot;: &quot;submitTranscript&quot;,
-
-            &quot;Status&quot;: &quot;OK&quot;
-
+            "msgType": "submitTranscript",
+            "Status": "OK"
         },
-
         {
-
-            &quot;status&quot;: &quot;acknowledged&quot;
-
+            "status": "acknowledged"
         },
-
         {
-
-            &quot;status&quot;: &quot;Failed; round not active&quot;
-
+            "status": "Failed; round not active"
         },
-
         {
-
-            &quot;status&quot;: &quot;Failed; round not active&quot;
-
+            "status": "Failed; round not active"
         }
-
     ]
-
 }
+```
 
 The allResponses portion of the JSON summarizes responses from the other entities to whom the message has been relayed; there is little harm in ignoring this information.
 
