@@ -4,7 +4,7 @@
 
 HUMAINE (HUman Multi-Agent Immersive NEgotiation) is a new ANAC (Automated Negotiating Agents Competition) league that will premiere at the International Joint Conference on Artificial Intelligence in Yokohama, Japan in July 2020.
 
-In this competition, two competing agents negotiate with a human buyer who wishes to purchase various ingredients from which cakes and pancakes can be made. The agents are rendered as avatars on a display, and the human interacts with them by speaking (in English) and looking at the one with whom they wish to negotiate. The negotiation platform uses a speech-to-text service to render the audio into text and a head-pose estimation system to infer the addressee and passes that information to each agent. Each agent must interpret the utterance, determine an appropriate negotiation act (such as a counteroffer, acceptance, or rejection) in light of the utterance and any other relevant context, and determine how best to render that act into an utterance and an accompanying gesture. Upon receiving this message from the agent and checking it for compliance with competition rules, the system causes the avatar to behave and speak as specified. The winning agent is the one that best maximizes its utility across multiple rounds of negotiation with various humans and other agents.
+In this competition, a human buyer wishes to purchase various ingredients from which cakes and pancakes can be made and two competing seller agents negotiate with the human through dialogue in an immersive environment. The agents are rendered as avatars on a display, and the human interacts with them by speaking (in English) and looking at the one with whom they wish to negotiate. The negotiation platform uses a speech-to-text service to render the audio into text and a head-pose estimation system to infer the addressee and passes that information to each agent. Each agent must detect the intent of the utterance, select an appropriate negotiation act (such as a counteroffer, acceptance, or rejection) in light of the intent of the utterance and any other relevant context, and determine how best to render that act into an utterance and an accompanying gesture. Upon receiving this message from the agent and checking it for compliance with competition rules, the platform causes the avatar to behave and speak as specified by the agent. The winning agent is the one that best maximizes its utility across multiple rounds of negotiation with various humans and other agents.
 
 An example interaction video can be found here:
 
@@ -14,9 +14,9 @@ The remainder of this document provides detailed information about the tournamen
 
 ### 1. Tournament overview
 
-The competition winner is determined by accumulating each agent&#39;s utility across a set of 5- or 10-minute rounds during which it interacts with different humans and other competing agents. An agent&#39;s utility is its profit -- the difference between the price for which it sells ingredients and those ingredients&#39; production cost (which is generated randomly for each round). Human buyers are also awarded according to profit. They have a utility function that represents the price for which they will be able to sell the cakes and pancakes they choose to make from the ingredients they have purchased. Like the agent sellers, they are rewarded according to their ability to maximize their utility (profit) during the competition. Humans are thus incentivized to drive as hard a bargain as possible, without running the risk of failing to reach an agreement with at least one agent.
+The competition&#39;s winner agent is determined by accumulating it&#39;s utility across a set of 5- or 10-minute rounds during which it interacts with different humans and other competing agents in different rounds, i.e., the two competitive agents interact with one human at a time. An agent&#39;s utility is its profit -- the difference between the price for which it sells ingredients and those ingredients&#39; production cost (which is generated randomly for each round). Human buyers are also awarded according to profit. They have a utility function that represents the price for which they will be able to sell the cakes and pancakes they choose to make from the ingredients they have purchased. Like the sellers agents, they are rewarded according to their ability to maximize their utility (profit) during the competition. Humans are thus incentivized to drive as hard a bargain as possible, without running the risk of failing to reach an agreement with at least one agent.
 
-Although the agent winner is determined by accumulated utility, the fact that the contest involves humans suggests that the most effective agents will be those that combine algorithmic prowess with social skills (e.g.. being fun, pleasant, or subtly manipulative).
+Although the agent winner is determined by accumulated utility, the fact that the contest involves humans suggests that the most effective agents will be those that combine algorithmic prowess with social skills (e.g.. being fun, pleasant, or subtly manipulative), which requires sophisticated dialogues or agents&#39; utterances responses.
 
 The tournament will be conducted in two stages: pool play and championship play. During pool play, the contestants will be divided into two or more pools. If the number of agents is not even, then an additional dummy agent will be supplied by the organizers to fill out one of the pools so that they each contain the same number. Within each pool, each player will play each of the other players for exactly two rounds, to be scheduled randomly so that the identity of their opponent will not be known to the agents. After pool play is complete, one or two agents with the highest accumulated utility in each pool will move on to the championship round, which will consist of longer multi-round matches against opponents in semi-finals and finals.
 
@@ -32,15 +32,16 @@ _Figure 1. Simplified view of HUMAINE&#39;s multi-agent multi-modal architecture
 
 The cloud on the left-hand side of this figure depicts the physical environment, containing the human negotiator H2 and two avatars A1 and A2. In that environment are various workers (provided by the HUMAINE platform) that collect audio and other sensor signals and process them into a representation of H2&#39;s utterance and certain aspects of H2&#39;s non-verbal behavior. The non-verbal behavior includes at a minimum an inference about the addressee Ð that is, the avatar who was addressed by the human, which is derived from head pose information based on camera data. In the future, it may also include information about human gestures and facial expressions.
 
-The verbal and non-verbal behavior are collated and formatted by the Rich Transcript Worker into a JSON structure that contains the utterance, addressee, speaker, and (optionally) additional behavioral information. It delivers this structure to all of the agents by calling their /receiveMessage APIs.
+The Rich Transcript Worker collates and formatts the verbal and non-verbal behavior of humans into a JSON structure that contains the utterance, addressee, speaker, and (optionally) additional behavioral information. It delivers this structure to all of the agents by calling their /receiveMessage APIs.
 
-The agents processes received messages and determine whether to respond, and if so what message to send to the Environment Orchestrator. This message could be an offer or counteroffer, acceptance or rejection of an offer, etc. The agent delivers that message to the Environment Orchestrator by calling the Environment Orchestrator&#39;s /relayMessage API.
+Then, the agents processes received messages and determine whether to respond, and if so what message to send to the Environment Orchestrator which encapsulates the response with the bid. This message could be an offer or counteroffer, acceptance or rejection of an offer, etc. The agent sends that message to the Environment Orchestrator by calling the Environment Orchestrator&#39;s /relayMessage API.
 
-The Environment Orchestrator decides whether to permit the relayed message to be delivered to the rest of the system. If the decision is to permit the message to be forwarded, the Environment Orchestrator calls the /receiveMessage API on all agents, just as the Rich Transcript worker does for messages generated by the human negotiator. It also calls the /receiveMessage API of an Avatar Controller located within the environment, which in turn delegates displaying the avatar and playing synthesized speech to a Display worker and a Speaker worker, respectively.
+The Environment Orchestrator decides whether to permit the relayed message to be broadcasted to the rest of the system. If the decision is to permit the message to be forwarded, the Environment Orchestrator calls the /receiveMessage API on all agents, just as the Rich Transcript worker does for messages generated by the human negotiator. It also calls the /receiveMessage API of an Avatar Controller located within the environment, which in turn delegates displaying the avatar and playing synthesized speech to a Display worker and a Speaker worker, respectively.
 
 A Competition Manager manages the competition as a whole by calling the Utility service to generate utility functions for the agents and humans in the system, storing them, and permuting them across different rounds to achieve fairness for agents and humans. A human administrator may use the Competition Manager to send a signal to the Environment Orchestrator signifying that a round is to start.
 
 The Human Assistant service is a tool that human negotiators can use to aid them in deciding what offers to make, and how to allocate their purchased goods into cakes and pancakes when the negotiation phase of the round is complete.
+
 
 ### 3. Negotiation round details
 
@@ -62,7 +63,9 @@ When an agent sells a bundle {n_egg, n_milk, n_sugar, ...} consisting of n_g ite
 
 Seller utility = p - Sum_g n_g c_g
 
-The buyer&#39;s utility is based upon the number of cakes and pancakes they can make from the goods they purchase during the round, with some extra value placed on extra flavorings: chocolate, vanilla and blueberries. The mapping from raw goods to baked goods is a fixed recipe that is known to all players. Specifically, the recipes are:
+Where Sum_g n_g c_g is the cost of all goods in the bundle.
+
+The human buyer&#39;s utility is based upon the number of cakes and pancakes they can make from the goods they purchase from the sellers' agents during the round, with some extra value placed on extra flavorings: chocolate, vanilla and blueberries. The mapping from raw goods to baked goods is a fixed recipe that is known to all players. Specifically, the recipes are:
 
 A cake can be made from:
 
@@ -79,7 +82,7 @@ A batch of pancakes can be made from:
 - 2 cups milk
 - Optional additives: Chocolate (in ounces) or Blueberries (in packets).
 
-At the beginning of the round, the buyer is given a budget. They should try to exhaust their budget as best they can, as no credit is given for any money left over at the end of the round.
+At the beginning of the round, the human buyer is given a budget. They should try to exhaust their budget as best they can, as no credit is given for any money left over at the end of the round.
 
 There is no carry-over from one round to another: the players have no way to recognize whether or when they are playing against an opponent they have met previously, and the utility functions are drawn randomly prior to each round, so that nothing can be learned from one round to another.
 
@@ -108,13 +111,13 @@ Once the round has begun, the human buyer starts by requesting a bundle of one o
 - Celia, I&#39;ll buy 2 cups of flour, 2 cups of sugar, and 2 cups of milk from you for $3.
 - Watson, can you sell me some milk and sugar?
 
-The seller agent will receive utterances as a call to a /receiveMessage API that they must implement. Details and example code are provided. Upon receiving the message, the seller agent should try to interpret its meaning, i.e. ascertain the type of negotiation act (offer/counteroffer, reject, accept, etc.) and the associated parameters. To do this, the seller agent should try to anticipate different ways in which buyers might start a negotiation and strive to recognize their intent accurately. One service you may want to consider using to aid in this task is Watson Assistant. The sample agent agent-jok uses this approach, and you are welcome to borrow that routine if you wish Ð just remember that you need to create your own IBM Cloud account, set up the Watson Assistant Service with your private API key and other information, and create your dialogue skill. You are welcome to start from the simple skill provided as JSON in the agent-jok code repository; you can upload this skill to our Watson Assistant Service instance.Note that human buyers will have an incentive to make themselves understood to the seller agents, so it is unlikely that they will deliberately express themselves in an obscure or confusing manner.
+The seller agent will receive utterances as a call to a /receiveMessage API that they must implement. Details and example code are provided on agents agent-jok and agent-kleen. Upon receiving the message, the seller agent should try to interpret its meaning, i.e. ascertain the type of negotiation act (offer/counteroffer, reject, accept, etc.) and the associated parameters. To do this, the seller agent should try to anticipate different ways in which buyers might start a negotiation and strive to recognize their intent accurately. One service you may want to consider using to aid in this task is Watson Assistant. The sample agent agent-jok uses this approach, and you are welcome to borrow that routine if you wish Ð just remember that you need to create your own IBM Cloud account, set up the Watson Assistant Service with your private API key and other information, and create your dialogue skill. You are welcome to start from the simple skill provided as JSON in the agent-jok code repository; you can upload this skill to our Watson Assistant Service instance.Note that human buyers will have an incentive to make themselves understood to the seller agents, so it is unlikely that they will deliberately express themselves in an obscure or confusing manner.
 
 Once the agent has interpreted the message, it needs to consider whether and how to respond to it. As part of this task, the agent must implement a bidding algorithm that computes a bid or other negotiation act that is intended to maximize its utility over the course of the round. It may well want to store messages that it has received during the round to aid it in this task. In addition to receiving utterances from the human buyer, the agent will also receive (via the /receiveMessage API) a copy of negotiation messages exchanged between the human buyer and the other seller agent.
 
 Finally, the seller agent needs to determine how best to express its intended negotiation act in a human-friendly form, consisting of text plus an optional specification of avatar behavior, such as &quot;smile&quot; or &quot;wave&quot;. The text may include SSML tags that allow for some expressiveness. Documentation for SSML may be found in the documentation for [Watson Text to Speech](https://cloud.ibm.com/docs/services/text-to-speech?topic=text-to-speech-ssml&amp;_ga=2.41390498.1876685034.1582841951-1115111321.1579580147&amp;_gac=1.185765339.1582841951.CjwKCAiA7t3yBRADEiwA4GFlI0RB95qHdAaZ2LFtsPwmlZD7SHa3XwUmNuETvRaHukZV9qKzZ8IODhoCvYcQAvD_BwE&amp;cm_mc_uid=15278110739115689857415&amp;cm_mc_sid_50200000=20950731577973297095&amp;cm_mc_sid_52640000=33641591577973297117#introduction-SSML). Whenever it is ready, the agent may submit its negotiation action by calling the system&#39;s /relayMessage API. This message contains the bid in structured form and in human-friendly form. The structured form is used by the system only; the other agent will only see the human-friendly part of the message.
 
-When the system receives the seller agent&#39;s bid, it applies a set of turn-taking rules to determine whether the message abides by those rules. These rules are described in detail in Appendix B. If a proposed message is deemed legal, the system forwards it to the software that causes the avatar to speak and act, and it also forwards the message to the other agent and the human buyer assistant UI. If the proposed message is deemed illegal, the system informs that agent that its message has been rejected, so that it can take this into account going forward. While the system prevents illegal messages from flowing, it behooves agent developers to endow their agent with an understanding of these rules, so that it can take them into account properly in its strategy.
+When the system receives the seller agent&#39;s bid, it applies a set of turn-taking rules to determine whether the message abides by those rules. These rules are described in detail in Appendix B. If a proposed message is allowed, the system forwards it to the software that causes the avatar to speak and act, and it also forwards the message to the other agent and the human buyer assistant UI. If the proposed message is not allowed, the system informs that agent that its message has been rejected, so that it can take this into account going forward. While the system prevents illegal messages from flowing, it behooves agent developers to endow their agent with an understanding of these rules, so that it can take them into account properly in its strategy.
 
 Buyers or sellers may make offers or counteroffers, or accept bids, or reject bids. The buyer assistant includes a button that allows the buyer to confirm an offer that has been accepted by either the buyer or the seller.
 
@@ -122,9 +125,9 @@ Once a bid has been accepted, the buyer may continue to initiate negotiation for
 
 ## Post bidding phase
 
-When a round ends, the buyer is given 2 minutes to decide how to allocate their purchased goods into cakes and pancakes, possibly with additional flavorings. They must be able to make an integer number of cakes or pancake batches; extra leftover ingredients that are not enough to make another cake or pancake batch will be worth nothing. For example, if the human has enough to bake 3 cakes with one egg left over, that one egg would be worth nothing. The buyer assistant tool provides a calculator that helps the buyer determine the overall value of any given allocation. When the buyer is ready, they press the &quot;Submit Allocation&quot; button.
+When a round ends, the human buyer is given 2 minutes to decide how to allocate their purchased goods into cakes and pancakes, possibly with additional flavorings. They must be able to make an integer number of cakes or pancake batches; extra leftover ingredients that are not enough to make another cake or pancake batch will be worth nothing. For example, if the human has enough to bake 3 cakes with one egg left over, that one egg would be worth nothing. The buyer assistant tool provides a calculator that helps the buyer determine the overall value of any given allocation. When the buyer is ready, they press the &quot;Submit Allocation&quot; button.
 
-Once the buyer submits their allocation, the seller utilities and the buyer utility are computed for that round, and added to each player&#39;s tournament totals.
+Once the human buyer submits their allocation, the seller agent&#39;s utilities and the human buyer&#39;s utility are computed for that round, and added to each player&#39;s tournament totals.
 
 ### 4. Building and Testing Your Own HUMAINE Agent
 
@@ -152,7 +155,7 @@ As an aid to developing your agent, and for details about the APIs, we recommend
 
 ## Testing your agent
 
-For the purpose of testing your agent, we have provided a collection of services from which you can create a small test environment. The test environment replaces the physical environment depicted in the HUMAINE architecture with a simple chat tool that allows you to simulate the human by typing utterances addressed to one of two agents: &quot;Celia&quot; and &quot;Watson&quot;.
+For the purpose of testing your agent, we have provided a collection of services from which you can create a small test environment. The test environment replaces the physical environment depicted in the HUMAINE architecture with a simple chat tool that allows you to interact with one of two agents: &quot;Celia&quot; and &quot;Watson&quot;, by typing utterances in a Chat UI.
 
 Figure 2 illustrates the test platform:
 
@@ -184,7 +187,7 @@ Figure 3 is a screenshot of the chat UI tool provided with the test environment 
 
   ![Fig3](Fig3.jpg)
   
-_Figure 3. Screenshot of chat UI provided with HUMAINE test environment, after the post-negotiation phase has ended. Administrator controls are provided in the lower left of the screen, and round results appear at the top left. At the bottom center right is a text window into which the user can enter a message addressed to either Celia or Watson (the agent sellers). At the far right on the bottom is a toggle button that allows one to show or hide a list of ingredients that have been purchased thus far in the round. The ingredients list appears at the top on the far right._
+_Figure 3. Screenshot of chat UI provided with HUMAINE test environment, after the post-negotiation phase has ended. Administrator controls are provided in the lower left of the screen, and round results appear at the top left. At the bottom center right is a text window into which the user can enter a message addressed to either Celia or Watson (the sellers agents). At the far right on the bottom is a toggle button that allows one to show or hide a list of ingredients that have been purchased thus far in the round. The ingredients list appears at the top on the far right._
 
 To pose as the tournament master / administrator, one can use the buttons in the lower left to set up the parameters of a round and start. The round parameters are all in units of seconds and include the length of the warmup period (during which the human can think about their bidding strategy given their utility function), the duration of the negotiation phase of the round, and the post-round period, during which the human can decide how to allocate the raw goods they have purchased into cakes and pancakes. At the top left is a summary that appears after the post-round period has completed, summarizing the results for the buyer and the two seller agents.
 
@@ -196,7 +199,7 @@ To assist the human buyer with decisions about what goods are needed to make cak
  
 _Figure 4. Screenshot of human assistant UI provided with HUMAINE test environment._
 
-Just below this, on the left, is a section of the UI that allows the buyer to explore whether they have enough goods to make a given number of cakes or pancakes with specified additives. One can fill in a proposed number of cakes and additives and then click the Check button. Then, under the Ingredients section in the top middle of the UI, the buyer will see the number of goods required, how many they have so far, and how many they need (highlighted in red for any goods for which there is a deficit).
+On the left, is a section of the UI that allows the buyer to explore whether they have enough goods to make a given number of cakes or pancakes with specified additives. One can fill in a proposed number of cakes and additives and then click the Check button. Then, under the Ingredients section in the top middle of the UI, the buyer will see the number of goods required, how many they have so far, and how many they need (highlighted in red for any goods for which there is a deficit).
 
 Just below the Ingredients section, in the bottom middle, is a section where the latest outstanding offers from the two sellers are rendered into a simple table. There are none in this screenshot because the round has ended.
 
@@ -204,15 +207,15 @@ On the right side of the UI is a Utility section that informs the buyer about th
 
 When the active negotiation phase has ended, a Post-Round countdown will start, and a Save button will appear on the left-hand side, under &quot;Can I Make ?...&quot;. During the Post-Round period, the human buyer use the allocation check to experiment with various ways of allocating goods into cakes and pancakes with additives. When satisfied that the allocation maximizes the utility (and before then Post-Round period is over), the buyer should click on Save to let the system know how she wants to allocate her goods. This information will be used to calculate the buyer&#39;s profit, which appears in the top left-hand panel of the chat-ui at the end of the round.
 
-In the near future, it will be possible to use the chat UI to simulate another seller, but for the present the seller text box is not yet functional (at least not correctly functional!) For now, you need to run two seller agents, one or both of which could be the test agents supplied with the platform, or your own agents.
+In the near future, it will be possible to use the chat UI to simulate another seller, but for the present the seller text box is not yet functional (at least not correctly functional!). For now, you need to run two seller agents, one or both of which could be the test agents supplied with the platform, or your own agents.
 
 
 
 ### Appendix A: Utility functions
 
-## Seller utility function
+## Agent utility function (Seller)
 
-When a seller completes an agreement to sell a bundle of goods {n1, n2, ..., nG} for a price p, its utility is
+When a seller agent completes an agreement to sell a bundle of goods {n1, n2, ..., nG} for a price p, its utility is
 
 p - Sumg cg \* ng,
 
@@ -230,9 +233,9 @@ The breakeven costs cg are drawn from uniform distributions with the minimum and
 | Vanilla | Teaspoon | [0.20, 0.40] |
 | Blueberry | Packet | [0.25, 0.50] |
 
-## Buyer utility function
+## Human utility function (Buyer)
 
-The buyer utility function is specified by the following 18 parameters. The 8 parameters highlighted in black are fixed in value, while the 10 parameters highlighted in blue are generated randomly in each round, with specified ranges.
+The human buyer utility function is specified by the following 18 parameters. The 8 parameters highlighted in black are fixed in value, while the 10 parameters highlighted in blue are generated randomly in each round, with specified ranges.
 
 - C: value in USD for producing a plain cake. (After purchasing the requisite goods, the human uses the Human Assistant tool to designate them as intended for a cake.)
 - P: value in USD for producing a batch of pancakes. (After purchasing the requisite goods, the human uses the Human Assistant tool to designate them as intended for pancakes.)
