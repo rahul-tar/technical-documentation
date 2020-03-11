@@ -313,16 +313,16 @@ Here are some examples of dialogues that illustrate correct and incorrect agent 
 **Example #1**
 
 <p> Human (H): A1, I would like to buy 2 eggs.
-<p>	<b style="word-space:2em">&nbsp;&nbsp;&nbsp;</b> Agent 1 (A1): I can give you 2 eggs for 5 dollars. [**OK**]
+<p>	<b style="word-space:2em">&nbsp;&nbsp;&nbsp;</b> Agent 1 (A1): I can give you 2 eggs for 5 dollars. (**OK**)
 <p>	<b style="word-space:2em">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b> 
-Agent 2 (A2): I can give you 2 eggs for 4.5 dollars. [**OK**]
+Agent 2 (A2): I can give you 2 eggs for 4.5 dollars. (**OK**)
 <br>
 <br>
 <p> Human (H): A2, I also would like to buy milk.
 <p>	<b style="word-space:2em">&nbsp;&nbsp;&nbsp;</b>
-		Agent 2 (A2): I can give you 2 eggs for 3 dollars. [**OK**]
+		Agent 2 (A2): I can give you 2 eggs for 3 dollars. (**OK**)
 <p>	<b style="word-space:2em">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b> 
-		Agent 1 (A1): I can give you a cup of milk for 2 dollars. The total for 2 eggs and a cup of milk is 7 dollars.  [**OK**]
+		Agent 1 (A1): I can give you a cup of milk for 2 dollars. The total for 2 eggs and a cup of milk is 7 dollars.  (**OK**)
 
 All agents are behaving correctly in this example. H first addressed A1, and A1 was the first to respond. Then, after A1 responded, A2 responded to H’s utterance. No other agent tried to speak until H spoke again, this time addressing A2. A2 responded first, and then after that A1 responded to H. While A2’s response to H’s second utterance does not directly address H’s request, it is legal. The system only checks for legality, and makes no effort to judge whether the agents’ messages are sensible.
 
