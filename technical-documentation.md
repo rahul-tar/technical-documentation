@@ -10,7 +10,7 @@ An example interaction video can be found here:
 
 [https://www.youtube.com/watch?v=KBV9z9fLAD0&amp;feature=emb\_title](https://www.youtube.com/watch?v=KBV9z9fLAD0&amp;feature=emb_title)
 
-The remainder of this document provides detailed information about the tournament, how individual negotiation rounds are conducted, the negotiation platform architecture and how the negotiating agents fit into it, and information about how to build and test your own negotiating agent in preparation for the competition. Appendices A, B, and C provide additional information that agent developers will find useful, regarding utility functions, interaction rules, and API details with pointers to sample code, respectively. Human participants will find Appendix D useful as a stand-alone guide to haggling with agents, while tournament masters will find useful information in Appendix E regarding how to administer the tournament.
+The remainder of this document provides detailed information about the tournament, how individual negotiation rounds are conducted, the negotiation platform architecture and how the negotiating agents fit into it, and information about how to build and test your own negotiating agent in preparation for the competition. Appendices A, B, and C provide additional information that agent developers will find useful, regarding utility functions, turn-taking rules, and API details with pointers to sample code, respectively. Human participants will find Appendix D useful as a stand-alone guide to haggling with agents, while tournament masters will find useful information in Appendix E regarding how to administer the tournament.
 
 ### 1. Tournament overview
 
@@ -113,11 +113,21 @@ Once the round has begun, the human buyer starts by requesting a bundle of one o
 
 The seller agent will receive utterances as a call to a /receiveMessage API that they must implement. Details and example code are provided on agents agent-jok and agent-kleen. Upon receiving the message, the seller agent should try to interpret its meaning, i.e. ascertain the type of negotiation act (offer/counteroffer, reject, accept, etc.) and the associated parameters. To do this, the seller agent should try to anticipate different ways in which buyers might start a negotiation and strive to recognize their intent accurately. One service you may want to consider using to aid in this task is Watson Assistant. The sample agent agent-jok uses this approach, and you are welcome to borrow that routine if you wish Ð just remember that you need to create your own IBM Cloud account, set up the Watson Assistant Service with your private API key and other information, and create your dialogue skill. You are welcome to start from the simple skill provided as JSON in the agent-jok code repository; you can upload this skill to our Watson Assistant Service instance.Note that human buyers will have an incentive to make themselves understood to the seller agents, so it is unlikely that they will deliberately express themselves in an obscure or confusing manner.
 
-Once the agent has interpreted the message, it needs to consider whether and how to respond to it. As part of this task, the agent must implement a bidding algorithm that computes a bid or other negotiation act that is intended to maximize its utility over the course of the round. It may well want to store messages that it has received during the round to aid it in this task. In addition to receiving utterances from the human buyer, the agent will also receive (via the /receiveMessage API) a copy of negotiation messages exchanged between the human buyer and the other seller agent.
+Once the agent has interpreted the message, it needs to consider whether and how to respond to it as follows:
 
-Finally, the seller agent needs to determine how best to express its intended negotiation act in a human-friendly form, consisting of text plus an optional specification of avatar behavior, such as &quot;smile&quot; or &quot;wave&quot;. The text may include SSML tags that allow for some expressiveness. Documentation for SSML may be found in the documentation for [Watson Text to Speech](https://cloud.ibm.com/docs/services/text-to-speech?topic=text-to-speech-ssml&amp;_ga=2.41390498.1876685034.1582841951-1115111321.1579580147&amp;_gac=1.185765339.1582841951.CjwKCAiA7t3yBRADEiwA4GFlI0RB95qHdAaZ2LFtsPwmlZD7SHa3XwUmNuETvRaHukZV9qKzZ8IODhoCvYcQAvD_BwE&amp;cm_mc_uid=15278110739115689857415&amp;cm_mc_sid_50200000=20950731577973297095&amp;cm_mc_sid_52640000=33641591577973297117#introduction-SSML). Whenever it is ready, the agent may submit its negotiation action by calling the system&#39;s /relayMessage API. This message contains the bid in structured form and in human-friendly form. The structured form is used by the system only; the other agent will only see the human-friendly part of the message.
+(i) Should the agent respond to the received task? This question can be answered by first understanding the message and then analyzing the turn taking rules.
 
-When the system receives the seller agent&#39;s bid, it applies a set of turn-taking rules to determine whether the message abides by those rules. These rules are described in detail in Appendix B. If a proposed message is allowed, the system forwards it to the software that causes the avatar to speak and act, and it also forwards the message to the other agent and the human buyer assistant UI. If the proposed message is not allowed, the system informs that agent that its message has been rejected, so that it can take this into account going forward. While the system prevents illegal messages from flowing, it behooves agent developers to endow their agent with an understanding of these rules, so that it can take them into account properly in its strategy.
+(ii) How to respond depends on the implementation of a bidding algorithm that computes a bid or other negotiation act that is intended to maximize its utility over the course of the round. It may well want to store messages that it has received during the round to aid it in this task. 
+
+In addition to receiving utterances from the human buyer, the agent will also receive (via the /receiveMessage API) a copy of negotiation messages exchanged between the human buyer and the other seller agent.
+
+Finally, the seller agent needs to determine how best to express its intended negotiation act in a human-friendly form, consisting of text plus an optional specification of avatar behavior, such as &quot;smile&quot; or &quot;wave&quot;. The text may include SSML tags that allow for some expressiveness. Documentation for SSML may be found in the documentation for [Watson Text to Speech](https://cloud.ibm.com/docs/services/text-to-speech?topic=text-to-speech-ssml&amp;_ga=2.41390498.1876685034.1582841951-1115111321.1579580147&amp;_gac=1.185765339.1582841951.CjwKCAiA7t3yBRADEiwA4GFlI0RB95qHdAaZ2LFtsPwmlZD7SHa3XwUmNuETvRaHukZV9qKzZ8IODhoCvYcQAvD_BwE&amp;cm_mc_uid=15278110739115689857415&amp;cm_mc_sid_50200000=20950731577973297095&amp;cm_mc_sid_52640000=33641591577973297117#introduction-SSML). 
+
+Eventually, after computing the bid and a human-friendly response with the negotiation action in natural language, the agent can evaluate the turn taking rules again before sending the generated bid.
+
+Whenever it is ready, the agent may submit its negotiation action by calling the system&#39;s /relayMessage API. This message contains the bid in structured form and in human-friendly form. The structured form is used by the system only; the other agent will only see the human-friendly part of the message.
+
+Finally, when the system receives the seller agent&#39;s bid, it applies a set of turn-taking rules to determine whether the message abides by those rules. These rules are described in detail in Appendix B. If a proposed message is allowed, the system forwards it to the software that causes the avatar to speak and act, and it also forwards the message to the other agent and the human buyer assistant UI. If the proposed message is not allowed, the system informs that agent that its message has been rejected, so that it can take this into account going forward. While the system prevents illegal messages from flowing, it behooves agent developers to endow their agent with an understanding of these rules, so that it can take them into account properly in its strategy.
 
 Buyers or sellers may make offers or counteroffers, or accept bids, or reject bids. The buyer assistant includes a button that allows the buyer to confirm an offer that has been accepted by either the buyer or the seller.
 
@@ -286,7 +296,7 @@ These parameters are all drawn from uniform distributions, with minimum and maxi
 | Upb\_min | Min. extra value added to pancake batch by adding the min. allowed amount of blueberry | [2, 4] |   |
 | Upb\_max | Max. extra value added to pancake batch by adding the max. allowed amount of blueberry | [4, 8] |   |
 
-### Appendix B: Interaction Rules
+### Appendix B: Interaction and Turn-Taking Rules
 
 Here are the interaction rules that are enforced by the system. These rules determine whether or not a message sent by a given party is blocked, or broadcast to the other agents in the system (and to the human, by rendering the message through the avatar).
 
@@ -296,6 +306,37 @@ An agent can tell whether its message has been broadcast or blocked by two means
 
 **R2** : If an agent is addressed, it has the first right to respond. It must do so within two seconds; otherwise the unaddressed agent will be granted the right to respond and the addressed agent will be prohibited from responding until the next human utterance.
 
+As an example of an correct dialogue following this rule, please see the dialogue below:
+
+    Human (H): A1, I would like to buy 2 eggs.
+
+      Agent 1 (A1): I can give you for 5 dollars.
+  
+        Agent 2 (A2): I can give you for 4.5 dollars.
+    
+    Human (H): A2, I also would like to buy milk.
+
+      Agent 2 (A2): I can give you for 3 dollars.
+  
+        Agent 1 (A1): I can give you for 2 dollars. Therefore, the total would be 7 dollars.
+  
+In this example, first A1 was addressed, then A2 was addressed. Therefore, only their answers to the human messages were allowed.
+The indentation illustrates to which message the message is a response.
+
+Below is an example of a dialogue with incorrect turn-taking:
+
+    Human (H): A1, I would like to buy 2 eggs.
+
+      Agent 2 (A2): I can give you for 4.5 dollars.
+  
+      Agent 1 (A1): I can give you for 5 dollars.
+  
+    Human (H): A2, I also would like to buy milk.
+
+       Agent 1 (A1): I can give you for 2 dollars.
+  
+       Agent 2 (A2): I can give you for 3 dollars.
+    
 **R3** : Each agent may speak at most once after the most recent human utterance. For example, the sequence [H, A1, A2, H, A2, A1] is valid, but the sequence [H, A1, A2, A1] is not because A1 has spoken twice after the most recent human utterance.
 
 Example of application of rules:
