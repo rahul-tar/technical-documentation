@@ -14,7 +14,7 @@ The remainder of this document provides detailed information about the tournamen
 
 ### 1. Tournament overview
 
-The competition&#39;s winner agent is determined by accumulating it&#39;s utility across a set of 5- or 10-minute rounds during which it interacts with different humans and other competing agents in different rounds, i.e., the two competitive agents interact with one human at a time. An agent&#39;s utility is its profit -- the difference between the price for which it sells ingredients and those ingredients&#39; production cost (which is generated randomly for each round). Human buyers are also awarded according to profit. They have a utility function that represents the price for which they will be able to sell the cakes and pancakes they choose to make from the ingredients they have purchased. Like the sellers agents, they are rewarded according to their ability to maximize their utility (profit) during the competition. Humans are thus incentivized to drive as hard a bargain as possible, without running the risk of failing to reach an agreement with at least one agent.
+The competition's winner agent is determined by accumulating its utility across a set of 5- or 10-minute rounds during which it interacts with different humans and other competing agents in different rounds, i.e., the two competitive agents interact with one human at a time. An agent's utility is its profit -- the difference between the price for which it sells ingredients and those ingredients' production cost (which is generated randomly for each round). Human buyers are also awarded according to profit. They have a utility function that represents the price for which they will be able to sell the cakes and pancakes they choose to make from the ingredients they have purchased. Like the sellers agents, they are rewarded according to their ability to maximize their utility (profit) during the competition. Humans are thus incentivized to drive as hard a bargain as possible, without running the risk of failing to reach an agreement with at least one agent.
 
 Although the agent winner is determined by accumulated utility, the fact that the contest involves humans suggests that the most effective agents will be those that combine algorithmic prowess with social skills (e.g.. being fun, pleasant, or subtly manipulative), which requires sophisticated dialogues or agents&#39; utterances responses.
 
@@ -308,44 +308,44 @@ An agent can tell whether its message has been broadcast or blocked by two means
 
 **R3**: Each agent may speak at most once after the most recent human utterance. For example, the sequence [H, A1, A2, H, A2, A1] is valid, but the sequence [H, A1, A2, A1] is not because A1 has spoken twice after the most recent human utterance.
 
-Here are some examples of dialogues that illustrate <span style="color: green;">correct</span> (colored green) and <span style="color: red;">incorrect</span> (colored red) agent behavior, along with an explanation of how the system treats the messages in each case.  Indenting is used to indicate the order in which messages were generated within each turn.
+Here are some examples of dialogues that illustrate correct and incorrect agent behavior, along with an indication and explanation of how the system treats the messages in each case. Indenting is used to indicate the order in which messages were generated within each turn.
 
 **Example #1**
 
 <p> Human (H): A1, I would like to buy 2 eggs.
-<p>	<b style="word-space:2em">&nbsp;&nbsp;&nbsp;</b> <span style="color: green;">Agent 1 (A1): I can give you 2 eggs for 5 dollars.</span>
-<p>	<b style="word-space:2em">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b> <span style="color: green;">
-		Agent 2 (A2): I can give you 2 eggs for 4.5 dollars.</span>
+<p>	<b style="word-space:2em">&nbsp;&nbsp;&nbsp;</b> Agent 1 (A1): I can give you 2 eggs for 5 dollars. [**OK**]
+<p>	<b style="word-space:2em">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b> 
+Agent 2 (A2): I can give you 2 eggs for 4.5 dollars. [**OK**]
 <br>
 <br>
 <p> Human (H): A2, I also would like to buy milk.
-<p>	<b style="word-space:2em">&nbsp;&nbsp;&nbsp;</b> <span style="color: green;">
-		Agent 2 (A2): I can give you 2 eggs for 3 dollars.</span>
-<p>	<b style="word-space:2em">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b> <span style="color: green;">
-		Agent 1 (A1): I can give you a cup of milk for 2 dollars. The total for 2 eggs and a cup of milk is 7 dollars.</span>
+<p>	<b style="word-space:2em">&nbsp;&nbsp;&nbsp;</b>
+		Agent 2 (A2): I can give you 2 eggs for 3 dollars. [**OK**]
+<p>	<b style="word-space:2em">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b> 
+		Agent 1 (A1): I can give you a cup of milk for 2 dollars. The total for 2 eggs and a cup of milk is 7 dollars.  [**OK**]
 
 All agents are behaving correctly in this example. H first addressed A1, and A1 was the first to respond. Then, after A1 responded, A2 responded to H’s utterance. No other agent tried to speak until H spoke again, this time addressing A2. A2 responded first, and then after that A1 responded to H. While A2’s response to H’s second utterance does not directly address H’s request, it is legal. The system only checks for legality, and makes no effort to judge whether the agents’ messages are sensible.
 
 **Example #2**
 
 <p>Human (H): A1, I would like to buy 2 eggs.
-<p>	<b style="word-space:2em">&nbsp;&nbsp;&nbsp;</b> <span style="color: green;">
-Agent 1 (A1): I can give you 2 eggs for 5 dollars.
-<p>	<b style="word-space:2em">&nbsp;&nbsp;&nbsp;</b> <span style="color: red;">Agent 2 (A2): I can give you 2 eggs for 5.50 dollars.
+<p>	<b style="word-space:2em">&nbsp;&nbsp;&nbsp;</b> 
+Agent 1 (A1): I can give you 2 eggs for 5 dollars.  [**OK**]
+<p>	<b style="word-space:2em">&nbsp;&nbsp;&nbsp;</b> Agent 2 (A2): I can give you 2 eggs for 5.50 dollars. [**BLOCKED**]
 <br>
 <br>
-<p>Human (H): A2, I also would like to buy milk.
-<p> <b style="word-space:2em">&nbsp;&nbsp;&nbsp;</b> <span style="color: green;">Agent 2 (A2): I can give you 2 eggs for 3 dollars.
-<p> <b style="word-space:2em">&nbsp;&nbsp;&nbsp;</b> <span style="color: red;">Agent 1 (A1): I can give you a cup of milk for 2 dollars. The total for 2 eggs and a cup of milk is 7 dollars.
+<p>Human (H): A2, I would also like to buy milk.
+<p> <b style="word-space:2em">&nbsp;&nbsp;&nbsp;</b> Agent 2 (A2): I can give you 2 eggs for 3 dollars.  [**OK**]
+<p> <b style="word-space:2em">&nbsp;&nbsp;&nbsp;</b> Agent 1 (A1): I can give you a cup of milk for 2 dollars. The total for 2 eggs and a cup of milk is 7 dollars. [**BLOCKED**]
 
 In this example, the messages are the same, but the timing is slightly different, in that both agents try to respond to human utterances more-or-less simultaneously (to within a two-second tolerance). A1’s response to H’s first utterance is legal, as A1 was addressed. But A2 has also responded to H without waiting for A1. In this case, the system accepts A1’s message and blocks A2’s. After receiving the rejection notice, it would be legal for A2 to try again. A2 could send the same message as before, but it may want to take into account A1’s message, a copy of which it will have received. For the second utterance of H, the roles are exactly reversed, and in this case A2’s response is accepted while A1’s is blocked. Again, it would be advisable for A1 to hold off, wait for A2 to respond, and then possibly take advantage of A2’s offer. 
 
 **Example #3**
 
 <p> Human (H): A1, I would like to buy 2 eggs.
-<p>	<b style="word-space:2em">&nbsp;&nbsp;&nbsp;</b> <span style="color: green;">Agent 1 (A1): I can give you 2 eggs for 5 dollars.
-<p>	<b style="word-space:2em">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b><span style="color: green;">Agent 2 (A2): I can give you 2 eggs for 4.5 dollars.
-<p>	<b style="word-space:2em">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b><span style="color: red;">Agent 1 (A1): I can give you 2 eggs for 4 dollars.
+<p>	<b style="word-space:2em">&nbsp;&nbsp;&nbsp;</b> Agent 1 (A1): I can give you 2 eggs for 5 dollars. [**OK**]
+<p>	<b style="word-space:2em">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b>Agent 2 (A2): I can give you 2 eggs for 4.5 dollars. [**OK**]
+<p>	<b style="word-space:2em">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b>Agent 1 (A1): I can give you 2 eggs for 4 dollars. [**BLOCKED**]
 
 This example is very much like Example #1, except that A1 tries to send one more message that underbids A2 before H has spoken again. A1’s first message is accepted, but its second one is rejected because it violates Rule R3.
 
@@ -353,17 +353,17 @@ This example is very much like Example #1, except that A1 tries to send one more
 
 <p> Human (H): A1, I would like to buy 2 eggs.
 <p> [*after 2 seconds*]
-<p> <b style="word-space:2em">&nbsp;&nbsp;&nbsp;</b> <span style="color: green;">Agent 2 (A2): I can give you 2 eggs for 4.5 dollars.
-<p> <b style="word-space:2em">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b> <span style="color: red;">Agent 1 (A1): I can give you 2 eggs for 4 dollars.
+<p> <b style="word-space:2em">&nbsp;&nbsp;&nbsp;</b> Agent 2 (A2): I can give you 2 eggs for 4.5 dollars. [**OK**]
+<p> <b style="word-space:2em">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b> Agent 1 (A1): I can give you 2 eggs for 4 dollars. [**BLOCKED**]
 
 In this case H addresses A1, but A1 doesn’t respond for 2 seconds. A2 is then free to make a bid, and it does so. Next, A1 tries to undercut A2’s bid, but it is blocked according to Rule R2 because its chance to respond has expired. 
 
 **Example #5**
 
 <p> Human (H): I would like to buy 2 eggs.
-<p> <b style="word-space:2em">&nbsp;&nbsp;&nbsp;</b> <span style="color: gray;">Agent 1 (A1): I can give you 2 eggs for 5 dollars.
-<p> <b style="word-space:2em">&nbsp;&nbsp;&nbsp;</b> <span style="color: green;">Agent 2 (A2): I can give you 2 eggs for 4.5 dollars.
-<p> <b style="word-space:2em">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b> <span style="color: green;">Agent 1 (A1): I can give you 2 eggs for 4 dollars.
+<p> <b style="word-space:2em">&nbsp;&nbsp;&nbsp;</b> Agent 1 (A1): I can give you 2 eggs for 5 dollars. [**BLOCKED by random choice**]
+<p> <b style="word-space:2em">&nbsp;&nbsp;&nbsp;</b> Agent 2 (A2): I can give you 2 eggs for 4.5 dollars. [**OK**]
+<p> <b style="word-space:2em">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b>Agent 1 (A1): I can give you 2 eggs for 4 dollars. [**OK**]
 
 In this case, H has not addressed any agent specifically, and the system receives messages from A1 and A2 at essentially the same time. A1 and A2 are both entitled to respond, but two agents can’t both speak at simultaneously. The system randomly selects one of the agents to go first -- in this case, A2. A1 can then take advantage of A2’s offer, and submit a new bid, as it does in this example.
 
