@@ -302,48 +302,72 @@ Here are the interaction rules that are enforced by the system. These rules dete
 
 An agent can tell whether its message has been broadcast or blocked by two means. First, when its message is broadcast, it receives a copy of that message. Second, when its message is rejected, its /receiveRejection API is called by the system.
 
-**R1** : All messages from humans are accepted, whenever they may occur.
+**R1**: All messages from humans are accepted, whenever they may occur.
 
-**R2** : If an agent is addressed, it has the first right to respond. It must do so within two seconds; otherwise the unaddressed agent will be granted the right to respond and the addressed agent will be prohibited from responding until the next human utterance.
+**R2**: If an agent is addressed, it has the first right to respond. It must do so within two seconds; otherwise the unaddressed agent will be granted the right to respond and the addressed agent will be prohibited from responding until the next human utterance.
 
-As an example of an correct dialogue following this rule, please see the dialogue below:
+**R3**: Each agent may speak at most once after the most recent human utterance. For example, the sequence [H, A1, A2, H, A2, A1] is valid, but the sequence [H, A1, A2, A1] is not because A1 has spoken twice after the most recent human utterance.
 
-    Human (H): A1, I would like to buy 2 eggs.
+Here are some examples of dialogues that illustrate <span style="color: green;">correct</span> (colored green) and <span style="color: red;">incorrect</span> (colored red) agent behavior, along with an explanation of how the system treats the messages in each case.  Indenting is used to indicate the order in which messages were generated within each turn.
 
-      Agent 1 (A1): I can give you for 5 dollars.
-  
-        Agent 2 (A2): I can give you for 4.5 dollars.
-    
-    Human (H): A2, I also would like to buy milk.
+**Example #1**
 
-      Agent 2 (A2): I can give you for 3 dollars.
-  
-        Agent 1 (A1): I can give you for 2 dollars. Therefore, the total would be 7 dollars.
-  
-In this example, first A1 was addressed, then A2 was addressed. Therefore, only their answers to the human messages were allowed.
-The indentation illustrates to which message the message is a response.
+<p> Human (H): A1, I would like to buy 2 eggs.
+<p>	<b style="word-space:2em">&nbsp;&nbsp;&nbsp;</b> <span style="color: green;">Agent 1 (A1): I can give you 2 eggs for 5 dollars.</span>
+<p>	<b style="word-space:2em">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b> <span style="color: green;">
+		Agent 2 (A2): I can give you 2 eggs for 4.5 dollars.</span>
+<br>
+<br>
+<p> Human (H): A2, I also would like to buy milk.
+<p>	<b style="word-space:2em">&nbsp;&nbsp;&nbsp;</b> <span style="color: green;">
+		Agent 2 (A2): I can give you 2 eggs for 3 dollars.</span>
+<p>	<b style="word-space:2em">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b> <span style="color: green;">
+		Agent 1 (A1): I can give you a cup of milk for 2 dollars. The total for 2 eggs and a cup of milk is 7 dollars.</span>
 
-Below is an example of a dialogue with incorrect turn-taking:
+All agents are behaving correctly in this example. H first addressed A1, and A1 was the first to respond. Then, after A1 responded, A2 responded to H’s utterance. No other agent tried to speak until H spoke again, this time addressing A2. A2 responded first, and then after that A1 responded to H. While A2’s response to H’s second utterance does not directly address H’s request, it is legal. The system only checks for legality, and makes no effort to judge whether the agents’ messages are sensible.
 
-    Human (H): A1, I would like to buy 2 eggs.
+**Example #2**
 
-      Agent 2 (A2): I can give you for 4.5 dollars.
-  
-      Agent 1 (A1): I can give you for 5 dollars.
-  
-    Human (H): A2, I also would like to buy milk.
+<p>Human (H): A1, I would like to buy 2 eggs.
+<p>	<b style="word-space:2em">&nbsp;&nbsp;&nbsp;</b> <span style="color: green;">
+Agent 1 (A1): I can give you 2 eggs for 5 dollars.
+<p>	<b style="word-space:2em">&nbsp;&nbsp;&nbsp;</b> <span style="color: red;">Agent 2 (A2): I can give you 2 eggs for 5.50 dollars.
+<br>
+<br>
+<p>Human (H): A2, I also would like to buy milk.
+<p> <b style="word-space:2em">&nbsp;&nbsp;&nbsp;</b> <span style="color: green;">Agent 2 (A2): I can give you 2 eggs for 3 dollars.
+<p> <b style="word-space:2em">&nbsp;&nbsp;&nbsp;</b> <span style="color: red;">Agent 1 (A1): I can give you a cup of milk for 2 dollars. The total for 2 eggs and a cup of milk is 7 dollars.
 
-       Agent 1 (A1): I can give you for 2 dollars.
-  
-       Agent 2 (A2): I can give you for 3 dollars.
-    
-**R3** : Each agent may speak at most once after the most recent human utterance. For example, the sequence [H, A1, A2, H, A2, A1] is valid, but the sequence [H, A1, A2, A1] is not because A1 has spoken twice after the most recent human utterance.
+In this example, the messages are the same, but the timing is slightly different, in that both agents try to respond to human utterances more-or-less simultaneously (to within a two-second tolerance). A1’s response to H’s first utterance is legal, as A1 was addressed. But A2 has also responded to H without waiting for A1. In this case, the system accepts A1’s message and blocks A2’s. After receiving the rejection notice, it would be legal for A2 to try again. A2 could send the same message as before, but it may want to take into account A1’s message, a copy of which it will have received. For the second utterance of H, the roles are exactly reversed, and in this case A2’s response is accepted while A1’s is blocked. Again, it would be advisable for A1 to hold off, wait for A2 to respond, and then possibly take advantage of A2’s offer. 
 
-Example of application of rules:
+**Example #3**
 
- ![FigB1](FigB1.jpg)
- 
-While we do not require that developers build these rules into their agents, we strongly advise developers to design agents with an awareness of these rules so as to avoid unanticipated message rejections during a competition.
+<p> Human (H): A1, I would like to buy 2 eggs.
+<p>	<b style="word-space:2em">&nbsp;&nbsp;&nbsp;</b> <span style="color: green;">Agent 1 (A1): I can give you 2 eggs for 5 dollars.
+<p>	<b style="word-space:2em">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b><span style="color: green;">Agent 2 (A2): I can give you 2 eggs for 4.5 dollars.
+<p>	<b style="word-space:2em">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b><span style="color: red;">Agent 1 (A1): I can give you 2 eggs for 4 dollars.
+
+This example is very much like Example #1, except that A1 tries to send one more message that underbids A2 before H has spoken again. A1’s first message is accepted, but its second one is rejected because it violates Rule R3.
+
+**Example #4**
+
+<p> Human (H): A1, I would like to buy 2 eggs.
+<p> [*after 2 seconds*]
+<p> <b style="word-space:2em">&nbsp;&nbsp;&nbsp;</b> <span style="color: green;">Agent 2 (A2): I can give you 2 eggs for 4.5 dollars.
+<p> <b style="word-space:2em">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b> <span style="color: red;">Agent 1 (A1): I can give you 2 eggs for 4 dollars.
+
+In this case H addresses A1, but A1 doesn’t respond for 2 seconds. A2 is then free to make a bid, and it does so. Next, A1 tries to undercut A2’s bid, but it is blocked according to Rule R2 because its chance to respond has expired. 
+
+**Example #5**
+
+<p> Human (H): I would like to buy 2 eggs.
+<p> <b style="word-space:2em">&nbsp;&nbsp;&nbsp;</b> <span style="color: gray;">Agent 1 (A1): I can give you 2 eggs for 5 dollars.
+<p> <b style="word-space:2em">&nbsp;&nbsp;&nbsp;</b> <span style="color: green;">Agent 2 (A2): I can give you 2 eggs for 4.5 dollars.
+<p> <b style="word-space:2em">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b> <span style="color: green;">Agent 1 (A1): I can give you 2 eggs for 4 dollars.
+
+In this case, H has not addressed any agent specifically, and the system receives messages from A1 and A2 at essentially the same time. A1 and A2 are both entitled to respond, but two agents can’t both speak at simultaneously. The system randomly selects one of the agents to go first -- in this case, A2. A1 can then take advantage of A2’s offer, and submit a new bid, as it does in this example.
+
+While we do not require that developers build these rules into their agents, we strongly advise developers to design agents with an awareness of these rules so as to avoid unanticipated message rejections during the competition.
 
 ### Appendix C: Sample Code and API details
 
