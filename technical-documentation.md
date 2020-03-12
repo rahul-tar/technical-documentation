@@ -93,14 +93,15 @@ While each player is aware of the general structure of the other players&#39; ut
 Just before the round starts, each player is sent a randomly-generated utility function that describes the cost or value of an item. See Appendix A for details of the distribution from which the parameters of the seller and buyer utility functions are drawn. The seller agents must implement a /setUtility API through which the system informs them about
 
 - their utility function
-- round parameters (such as the round duration and the length of the warmup period)
+- round parameters (such as the round duration and the length of the warmup period, both in seconds)
 - the name by which the agent will be known (Celia Ð represented as a female avatar with a female voice, or Watson Ð represented as a male avatar with a male voice). Agent developers may or may not decide to generate negotiation bids in such a way as to reflect gender.
 
 An example seller agent that implements this API and others referred to in this Technical Details section, called agent-jok, is provided with the HUMAINE code distribution.
 
-Humans are provided with a simple tool that aids them in their negotiation with sellers; this tool also receives information about the human utility and the round parameters.
+Humans are provided with a simple tool, called Human Assistant UI, that aids them in their negotiation with sellers agents; this tool also receives information about the human utility and the round parameters.
 
-A short warmup period then ensues, during which the human buyer can think about their negotiation strategy. Then, the agents and the human bidding tool are informed when the round has started, at which point they can start negotiating. The agents must implement a /startRound API so that they can receive this message from the system (see the agent-jok example in the HUMAINE code distribution).
+
+Once the human buyer starts the round through this tool, a short warmup period in seconds then ensues, during which the human buyer can think about their negotiation strategy. Then, the agents and the Human Assistant UI are informed when the round has started and the elapsed time in seconds for the current round is displayed and the dialogue can begin with the negotiating. Because of that, the agents must implement a /startRound API so that they can receive this message from the system (see the agent-jok example in the HUMAINE code distribution).
 
 ## During the round
 
