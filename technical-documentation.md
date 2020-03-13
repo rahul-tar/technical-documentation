@@ -303,7 +303,7 @@ Here are the interaction rules that are enforced by the system (specifically, th
 
 An agent can tell whether its message has been broadcast or blocked by two means. First, when its message is broadcast, it receives a copy of that message. Second, when its message is rejected, its /receiveRejection API is called by the system.
 
-**R1**: All messages from humans are accepted, whenever they may occur UNLESS the message is an acceptance that would result in the human's budget going negative.
+**R1**: Every message from a human is accepted UNLESS the message is an acceptance that would result in the human's budget going negative.
 
 **R2**: If an agent is addressed, it has the first right to respond. It must do so within two seconds; otherwise the unaddressed agent will be granted the right to respond and the addressed agent will be prohibited from responding until the next human utterance. Once the unaddressed agent receives a copy of a message sent by the addressed agent to the human, or once the two second period has expired, it is free to submit a response. Premature responses by the unaddressed agent that don't satisfy these conditions will be blocked. We recommend that the unaddressed agent take into account the content of the addressed agent's message in order to make the most out of its turn.
 
