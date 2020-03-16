@@ -299,13 +299,13 @@ These parameters are all drawn from uniform distributions, with minimum and maxi
 
 ### Appendix B: Interaction and Turn-Taking Rules
 
-Here are the interaction rules that are enforced by the system. These rules determine whether or not a message sent by a given party is blocked, or broadcast to the other agents in the system (and to the human, by rendering the message through the avatar).
+Here are the interaction rules that are enforced by the system (specifically, the environment orchestrator). These rules determine whether or not a message sent by a given party is blocked, or broadcast to the other agents in the system (and to the human, by rendering the message through the avatar). Aspects of the rules that depend on absolute or relative timing make use of a timestamp that is assigned to each message at the moment it is received by the environment orchestrator’s /relayMessage API.
 
 An agent can tell whether its message has been broadcast or blocked by two means. First, when its message is broadcast, it receives a copy of that message. Second, when its message is rejected, its /receiveRejection API is called by the system.
 
-**R1**: All messages from humans are accepted, whenever they may occur.
+**R1**: Every message from a human is accepted UNLESS the message is an acceptance that would result in the human's budget going negative.
 
-**R2**: If an agent is addressed, it has the first right to respond. It must do so within two seconds; otherwise the unaddressed agent will be granted the right to respond and the addressed agent will be prohibited from responding until the next human utterance.
+**R2**: If an agent is addressed, it has the first right to respond. It must do so within two seconds; otherwise the unaddressed agent will be granted the right to respond and the addressed agent will be prohibited from responding until the next human utterance. Once the unaddressed agent receives a copy of a message sent by the addressed agent to the human, or once the two second period has expired, it is free to submit a response. Premature responses by the unaddressed agent that don't satisfy these conditions will be blocked. We recommend that the unaddressed agent take into account the content of the addressed agent's message in order to make the most out of its turn.
 
 **R3**: Each agent may speak at most once after the most recent human utterance. For example, the sequence [H, A1, A2, H, A2, A1] is valid, but the sequence [H, A1, A2, A1] is not because A1 has spoken twice after the most recent human utterance.
 
