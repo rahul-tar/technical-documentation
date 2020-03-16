@@ -309,6 +309,8 @@ An agent can tell whether its message has been broadcast or blocked by two means
 
 **R3**: Each agent may speak at most once after the most recent human utterance. For example, the sequence [H, A1, A2, H, A2, A1] is valid, but the sequence [H, A1, A2, A1] is not because A1 has spoken twice after the most recent human utterance.
 
+**R4**: All agents’ responses that are received by the Environment Orchestrator after two seconds with regard to the time to which the message is a reply to, regardless of direct address, are blocked.
+
 Here are some examples of dialogues that illustrate correct and incorrect agent behavior, along with an indication and explanation of how the system treats the messages in each case. Indenting is used to indicate the order in which messages were generated within each turn.
 
 **Example #1**
@@ -367,6 +369,18 @@ In this case H addresses A1, but A1 doesn’t respond for 2 seconds. A2 is then 
 <p> <b style="word-space:2em">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b>Agent 1 (A1): I can give you 2 eggs for 4 dollars. [**OK**]
 
 In this case, H has not addressed any agent specifically, and the system receives messages from A1 and A2 at essentially the same time. A1 and A2 are both entitled to respond, but two agents can’t both speak at simultaneously. The system randomly selects one of the agents to go first -- in this case, A2. A1 can then take advantage of A2’s offer, and submit a new bid, as it does in this example.
+
+**Example #6:**
+
+<p> Human (H): I would like to buy 2 eggs.
+<p> <b style="word-space:2em">&nbsp;&nbsp;&nbsp;</b> [before 2 seconds] Agent 1 (A1): I can give you 2 eggs for 4.5 dollars.
+<p> <b style="word-space:2em">&nbsp;&nbsp;&nbsp;</b> [before 2 seconds after A1: Agent 2(A2): I can give you 2 eggs for 4 dollars.
+<p> <b style="word-space:2em">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b>[after 2 seconds after A1] Agent 2(A2): I can give you 2 eggs for 4 dollars.
+<p> <b style="word-space:2em">&nbsp;&nbsp;&nbsp;</b> [before 2 seconds after H] Agent 2 (A2): I can give you 2 eggs for 5 dollars.
+<p> <b style="word-space:2em">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b> [after 2 seconds after H] Agent 2 (A2): I can give you 2 eggs for 5 dollars.
+
+In this dialogue, there are examples of answers that are permitted and blocked based on the 2 seconds of rule R4. The first blocked message is a reply of agent A2 to agent A1, because it was sent after 2 seconds in relation to A1 message. The same happens with Agent A2, when it  responds to a human’s message after 2 seconds.
+
 
 While we do not require that developers build these rules into their agents, we strongly advise developers to design agents with an awareness of these rules so as to avoid unanticipated message rejections during the competition.
 
