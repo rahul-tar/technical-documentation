@@ -181,23 +181,26 @@ It is worthwhile to compare the test platform architecture of Figure 2 with the 
 - In the test platform, the Chat UI stands in the place of the Rich Transcript worker. It calls the /receiveMessage API of all of the agents to send them messages from the human buyer.
 - In the test platform, the Chat UI stands in the place of the Competition Manager. It provides buttons that allow a human to launch a single negotiation round, and displays results when the round is over. One cannot use the Chat UI to simulate a competition; it only handles one round at a time. In its role as substitute Competition Manager, the Chat UI calls the Utility service to randomly generate utilities at the beginning of a round, and calls the Environment Orchestrator to launch a round.
 
-To set up the test environment, there are two approaches:
+To set up the test environment, you first need to get the HUMAINE platform running. There are two approaches:
 
 1. The all-in-one: Go to https://github.com/humaine-anac/application/releases/latest and you will find pre-built binaries for Windows, macOS, and Linux. You can just download and run it directly, without requiring installation of any dependencies. When you run it, it will start-up the environment-orchestrator, utility-generator, chat-ui, and human-ui and their related endpoints will be available.
 
-2. The old-fashioned way: go to https://github.com/humaine-anac/, where you will find the repositories for the following components:
+2. The old-fashioned way: go to https://github.com/humaine-anac/, where you will find the repositories for the following components; do a git clone on each and follow the instructions in their individual READMEs to install and configure them:
   - environment-orchestrator
   - utility-generator
   - chat-ui
   - human-ui
-
-  Where after doing a git clone on each of the repositories, follow the instructions in their README to install and configure them for your computer.
+  
+The second task is to install and configure the agents. Three sample agents are provided:
+  - agent-jok
+  - agent-py
+  - agent-kleene
+  
+Do a git clone of any of these repositories that you want to try, and follow the instructions in their README to install and configure them for your computer.
 
 Make sure that you run two agents. To start with, you could run two copies of agent-jok or agent-kleene at different ports. Then, as soon as you have your own agent to test, you should substitute yours for one or both of the test agents that we supply.
-In your browser, start up one window at http://localhost:2500 and another at http://localhost:7040.
 
-These will be the chat-ui and the human-ui, respectively.
-
+In your browser, start up one window at http://localhost:2500 and another at http://localhost:7040. These will be the chat-ui and the human-ui, respectively.
 
 Figure 3 is a screenshot of the chat UI tool provided with the test environment (at localhost:2500):
 
