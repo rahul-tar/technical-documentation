@@ -311,7 +311,9 @@ Here are the interaction rules that are enforced by the system (specifically, th
 
 An agent can tell whether its message has been broadcast or blocked by two means. First, when its message is broadcast, it receives a copy of that message. Second, when its message is rejected, its /receiveRejection API is called by the system.
 
-**R0**: Every message from a human is accepted UNLESS the message is blocked by rule **R1**.
+**R0**: Every message from a human is accepted UNLESS
+ - the message is blocked by rule **R1** OR
+ - the message occurs less than 5 seconds after the previous human utterance
 
 **R1**: If a message from any party is an acceptance that would result in the human's budget going negative, it is blocked.
 
