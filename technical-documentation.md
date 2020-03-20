@@ -311,13 +311,15 @@ Here are the interaction rules that are enforced by the system (specifically, th
 
 An agent can tell whether its message has been broadcast or blocked by two means. First, when its message is broadcast, it receives a copy of that message. Second, when its message is rejected, its /receiveRejection API is called by the system.
 
-**R1**: Every message from a human is accepted UNLESS the message is an acceptance that would result in the human's budget going negative.
+**R0**: Every message from a human is accepted UNLESS the message is blocked by rule **R1**.
+
+**R1**: If a message from any party is an acceptance that would result in the human's budget going negative, it is blocked.
 
 **R2**: If an agent is addressed, it has the first right to respond. It must do so within two seconds; otherwise the unaddressed agent will be granted the right to respond and the addressed agent will be prohibited from responding until the next human utterance. Once the unaddressed agent receives a copy of a message sent by the addressed agent to the human, or once the two second period has expired, it is free to submit a response. Premature responses by the unaddressed agent that don't satisfy these conditions will be blocked. We recommend that the unaddressed agent take into account the content of the addressed agent's message in order to make the most out of its turn.
 
 **R3**: Each agent may speak at most once after the most recent human utterance. For example, the sequence [H, A1, A2, H, A2, A1] is valid, but the sequence [H, A1, A2, A1] is not because A1 has spoken twice after the most recent human utterance.
 
-**R4**: All agents’ responses that are received by the Environment Orchestrator after two seconds with regard to the time to which the message is a reply to, regardless of direct address, are blocked.
+**R4**: Agent responses that exceed N (currently = 100) words in length are blocked.
 
 Here are some examples of dialogues that illustrate correct and incorrect agent behavior, along with an indication and explanation of how the system treats the messages in each case. Indenting is used to indicate the order in which messages were generated within each turn.
 
