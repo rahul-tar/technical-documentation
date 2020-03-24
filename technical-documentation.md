@@ -319,7 +319,7 @@ An agent can tell whether its message has been broadcast or blocked by two means
 
 **R2**: If an agent is addressed, it has the first right to respond. It must do so within two seconds; otherwise the unaddressed agent will be granted the right to respond and the addressed agent will be prohibited from responding until the next human utterance. Once the unaddressed agent receives a copy of a message sent by the addressed agent to the human, or once the two second period has expired, it is free to submit a response. Premature responses by the unaddressed agent that don't satisfy these conditions will be blocked. We recommend that the unaddressed agent take into account the content of the addressed agent's message in order to make the most out of its turn.
 
-**R3**: Each agent may speak at most once after the most recent human utterance. For example, the sequence [H, A1, A2, H, A2, A1] is valid, but the sequence [H, A1, A2, A1] is not because A1 has spoken twice after the most recent human utterance.
+**R3**: Each agent may speak at most once after the most recent human utterance. For example, the sequence [H, A1, A2, H, A2, A1] is valid, but the sequence [H, A1, A2, A1] is not because A1 has spoken twice after the most recent human utterance. If both agents reply at the same time, or in other words, if the difference between the timestamps upon reception of the messages is within milliseconds, the first response is granted, while the second is blocked. The agent that had its message blocked can still reply to the human and it could take into account the message of the other agent that has been allowed.
 
 **R4**: Agent responses that exceed N (currently = 100) words in length are blocked.
 
@@ -329,14 +329,13 @@ Here are some examples of dialogues that illustrate correct and incorrect agent 
 
 <p> Human (H): A1, I would like to buy 2 eggs.
 <p>	<b style="word-space:2em">&nbsp;&nbsp;&nbsp;</b> Agent 1 (A1): I can give you 2 eggs for 5 dollars. [**OK**]
-<p>	<b style="word-space:2em">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b> 
-Agent 2 (A2): I can give you 2 eggs for 4.5 dollars. [**OK**]
+<p>	<b style="word-space:2em">&nbsp;&nbsp;&nbsp;</b> Agent 2 (A2): I can give you 2 eggs for 4.5 dollars. [**OK**]
 <br>
 <br>
 <p> Human (H): A2, I also would like to buy milk.
 <p>	<b style="word-space:2em">&nbsp;&nbsp;&nbsp;</b>
 		Agent 2 (A2): I can give you 2 eggs for 3 dollars. [**OK**]
-<p>	<b style="word-space:2em">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b> 
+<p>	<b style="word-space:2em">&nbsp;&nbsp;&nbsp;</b> 
 		Agent 1 (A1): I can give you a cup of milk for 2 dollars. The total for 2 eggs and a cup of milk is 7 dollars.  [**OK**]
 
 All agents are behaving correctly in this example. H first addressed A1, and A1 was the first to respond. Then, after A1 responded, A2 responded to H’s utterance. No other agent tried to speak until H spoke again, this time addressing A2. A2 responded first, and then after that A1 responded to H. While A2’s response to H’s second utterance does not directly address H’s request, it is legal. The system only checks for legality, and makes no effort to judge whether the agents’ messages are sensible.
@@ -344,8 +343,7 @@ All agents are behaving correctly in this example. H first addressed A1, and A1 
 **Example #2**
 
 <p>Human (H): A1, I would like to buy 2 eggs.
-<p>	<b style="word-space:2em">&nbsp;&nbsp;&nbsp;</b> 
-Agent 1 (A1): I can give you 2 eggs for 5 dollars.  [**OK**]
+<p>	<b style="word-space:2em">&nbsp;&nbsp;&nbsp;</b> Agent 1 (A1): I can give you 2 eggs for 5 dollars.  [**OK**]
 <p>	<b style="word-space:2em">&nbsp;&nbsp;&nbsp;</b> Agent 2 (A2): I can give you 2 eggs for 5.50 dollars. [**BLOCKED**]
 <br>
 <br>
@@ -359,8 +357,8 @@ In this example, the messages are the same, but the timing is slightly different
 
 <p> Human (H): A1, I would like to buy 2 eggs.
 <p>	<b style="word-space:2em">&nbsp;&nbsp;&nbsp;</b> Agent 1 (A1): I can give you 2 eggs for 5 dollars. [**OK**]
-<p>	<b style="word-space:2em">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b>Agent 2 (A2): I can give you 2 eggs for 4.5 dollars. [**OK**]
-<p>	<b style="word-space:2em">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b>Agent 1 (A1): I can give you 2 eggs for 4 dollars. [**BLOCKED**]
+<p>	<b style="word-space:2em">&nbsp;&nbsp;&nbsp;</b>Agent 2 (A2): I can give you 2 eggs for 4.5 dollars. [**OK**]
+<p>	<b style="word-space:2em">&nbsp;&nbsp;&nbsp;</b>Agent 1 (A1): I can give you 2 eggs for 4 dollars. [**BLOCKED**]
 
 This example is very much like Example #1, except that A1 tries to send one more message that underbids A2 before H has spoken again. A1’s first message is accepted, but its second one is rejected because it violates Rule R3.
 
@@ -369,7 +367,7 @@ This example is very much like Example #1, except that A1 tries to send one more
 <p> Human (H): A1, I would like to buy 2 eggs.
 <p> [*after 2 seconds*]
 <p> <b style="word-space:2em">&nbsp;&nbsp;&nbsp;</b> Agent 2 (A2): I can give you 2 eggs for 4.5 dollars. [**OK**]
-<p> <b style="word-space:2em">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b> Agent 1 (A1): I can give you 2 eggs for 4 dollars. [**BLOCKED**]
+<p> <b style="word-space:2em">&nbsp;&nbsp;&nbsp;</b> Agent 1 (A1): I can give you 2 eggs for 4 dollars. [**BLOCKED**]
 
 In this case H addresses A1, but A1 doesn’t respond for 2 seconds. A2 is then free to make a bid, and it does so. Next, A1 tries to undercut A2’s bid, but it is blocked according to Rule R2 because its chance to respond has expired. 
 
@@ -378,7 +376,7 @@ In this case H addresses A1, but A1 doesn’t respond for 2 seconds. A2 is then 
 <p> Human (H): I would like to buy 2 eggs.
 <p> <b style="word-space:2em">&nbsp;&nbsp;&nbsp;</b> Agent 1 (A1): I can give you 2 eggs for 5 dollars. [**BLOCKED by random choice**]
 <p> <b style="word-space:2em">&nbsp;&nbsp;&nbsp;</b> Agent 2 (A2): I can give you 2 eggs for 4.5 dollars. [**OK**]
-<p> <b style="word-space:2em">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b>Agent 1 (A1): I can give you 2 eggs for 4 dollars. [**OK**]
+<p> <b style="word-space:2em">&nbsp;&nbsp;&nbsp;</b>Agent 1 (A1): I can give you 2 eggs for 4 dollars. [**OK**]
 
 In this case, H has not addressed any agent specifically, and the system receives messages from A1 and A2 at essentially the same time. A1 and A2 are both entitled to respond, but two agents can’t both speak at simultaneously. The system randomly selects one of the agents to go first -- in this case, A2. A1 can then take advantage of A2’s offer, and submit a new bid, as it does in this example.
 
@@ -387,9 +385,9 @@ In this case, H has not addressed any agent specifically, and the system receive
 <p> Human (H): I would like to buy 2 eggs.
 <p> <b style="word-space:2em">&nbsp;&nbsp;&nbsp;</b> [before 2 seconds] Agent 1 (A1): I can give you 2 eggs for 4.5 dollars.
 <p> <b style="word-space:2em">&nbsp;&nbsp;&nbsp;</b> [before 2 seconds after A1: Agent 2(A2): I can give you 2 eggs for 4 dollars.
-<p> <b style="word-space:2em">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b>[after 2 seconds after A1] Agent 2(A2): I can give you 2 eggs for 4 dollars.
+<p> <b style="word-space:2em">&nbsp;&nbsp;&nbsp;</b>[after 2 seconds after A1] Agent 2(A2): I can give you 2 eggs for 4 dollars.
 <p> <b style="word-space:2em">&nbsp;&nbsp;&nbsp;</b> [before 2 seconds after H] Agent 2 (A2): I can give you 2 eggs for 5 dollars.
-<p> <b style="word-space:2em">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b> [after 2 seconds after H] Agent 2 (A2): I can give you 2 eggs for 5 dollars.
+<p> <b style="word-space:2em">&nbsp;&nbsp;&nbsp;</b> [after 2 seconds after H] Agent 2 (A2): I can give you 2 eggs for 5 dollars.
 
 In this dialogue, there are examples of answers that are permitted and blocked based on the 2 seconds of rule R4. The first blocked message is a reply of agent A2 to agent A1, because it was sent after 2 seconds in relation to A1 message. The same happens with Agent A2, when it  responds to a human’s message after 2 seconds.
 
