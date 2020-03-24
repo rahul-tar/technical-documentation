@@ -311,11 +311,9 @@ Here are the interaction rules that are enforced by the system (specifically, th
 
 An agent can tell whether its message has been broadcast or blocked by two means. First, when its message is broadcast, it receives a copy of that message. Second, when its message is rejected, its /receiveRejection API is called by the system.
 
-**R0**: Every message from a human is accepted UNLESS
- - the message is blocked by rule **R1** OR
- - the message occurs less than 5 seconds after the previous human utterance
+**R0**: A message from a human is blocked if it occurs less than 5 seconds after the previous human utterance.
 
-**R1**: If a message from any party is an acceptance that would result in the human's budget going negative, it is blocked.
+**R1**: A message from any party that would cause the human’s budget to go negative is blocked.
 
 **R2**: If an agent is addressed, it has the first right to respond. It must do so within two seconds; otherwise the unaddressed agent will be granted the right to respond and the addressed agent will be prohibited from responding until the next human utterance. Once the unaddressed agent receives a copy of a message sent by the addressed agent to the human, or once the two second period has expired, it is free to submit a response. Premature responses by the unaddressed agent that don't satisfy these conditions will be blocked. We recommend that the unaddressed agent take into account the content of the addressed agent's message in order to make the most out of its turn.
 
@@ -365,8 +363,7 @@ This example is very much like Example #1, except that A1 tries to send one more
 **Example #4**
 
 <p> Human (H): A1, I would like to buy 2 eggs.
-<p> [*after 2 seconds*]
-<p> <b style="word-space:2em">&nbsp;&nbsp;&nbsp;</b> Agent 2 (A2): I can give you 2 eggs for 4.5 dollars. [**OK**]
+<p> [*after 2 seconds*] <b style="word-space:2em">&nbsp;&nbsp;&nbsp;</b> Agent 2 (A2): I can give you 2 eggs for 4.5 dollars. [**OK**]
 <p> <b style="word-space:2em">&nbsp;&nbsp;&nbsp;</b> Agent 1 (A1): I can give you 2 eggs for 4 dollars. [**BLOCKED**]
 
 In this case H addresses A1, but A1 doesn’t respond for 2 seconds. A2 is then free to make a bid, and it does so. Next, A1 tries to undercut A2’s bid, but it is blocked according to Rule R2 because its chance to respond has expired. 
@@ -379,6 +376,14 @@ In this case H addresses A1, but A1 doesn’t respond for 2 seconds. A2 is then 
 <p> <b style="word-space:2em">&nbsp;&nbsp;&nbsp;</b> Agent 1 (A1): I can give you 2 eggs for 4 dollars. [**OK**]
 
 In this case, H has not addressed any agent specifically, and the system receives messages from A1 and A2 at essentially the same time. A1 and A2 are both entitled to respond, but two agents can’t both speak at simultaneously. The system selects the first message to go first -- in this case, A2. A1 can then take advantage of A2’s offer, and submit a new bid, as it does in this example.
+
+**Example #6:**
+
+<p> Human (H): I would like to buy 2 eggs.
+<p> <b style="word-space:2em">&nbsp;&nbsp;&nbsp;</b> Agent 1 (A1): I can give you a good price on 2 eggs, but first I think you might like to hear a few verses of Jabberwocky by Lewis Carroll, which is my favorite poem: “’Twas brillig, and the slithy toves Did gyre and gimble in the wabe: All mimsy were the borogoves And the mome raths outgrabe. ‘Beware the Jabberwock, my son! The jaws that bite, the claws that catch! Beware the Jubjub bird, and shun The frumious Bandersnatch!” He took his vorpal sword in hand; Long time the manxome foe he sought— So rested he by the Tumtum tree And stood awhile in thought. And, as in uffish thought he stood The Jabberwock, with eyes of flame, Came whiffling…” Oh wait, where was I? Oh yes -- I can give you 2 eggs for 4.50 dollars.
+
+Agent A1’s message would be blocked according to rule R4, as it exceeds the 100-word limit.
+
 
 While we do not require that developers build these rules into their agents, we strongly advise developers to design agents with an awareness of these rules so as to avoid unanticipated message rejections during the competition.
 
