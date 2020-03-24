@@ -376,7 +376,7 @@ In this case H addresses A1, but A1 doesn’t respond for 2 seconds. A2 is then 
 <p> Human (H): I would like to buy 2 eggs.
 <p> <b style="word-space:2em">&nbsp;&nbsp;&nbsp;</b> Agent 1 (A1): I can give you 2 eggs for 5 dollars. [**BLOCKED by random choice**]
 <p> <b style="word-space:2em">&nbsp;&nbsp;&nbsp;</b> Agent 2 (A2): I can give you 2 eggs for 4.5 dollars. [**OK**]
-<p> <b style="word-space:2em">&nbsp;&nbsp;&nbsp;</b>Agent 1 (A1): I can give you 2 eggs for 4 dollars. [**OK**]
+<p> <b style="word-space:2em">&nbsp;&nbsp;&nbsp;</b> Agent 1 (A1): I can give you 2 eggs for 4 dollars. [**OK**]
 
 In this case, H has not addressed any agent specifically, and the system receives messages from A1 and A2 at essentially the same time. A1 and A2 are both entitled to respond, but two agents can’t both speak at simultaneously. The system randomly selects one of the agents to go first -- in this case, A2. A1 can then take advantage of A2’s offer, and submit a new bid, as it does in this example.
 
@@ -385,7 +385,7 @@ In this case, H has not addressed any agent specifically, and the system receive
 <p> Human (H): I would like to buy 2 eggs.
 <p> <b style="word-space:2em">&nbsp;&nbsp;&nbsp;</b> [before 2 seconds] Agent 1 (A1): I can give you 2 eggs for 4.5 dollars.
 <p> <b style="word-space:2em">&nbsp;&nbsp;&nbsp;</b> [before 2 seconds after A1: Agent 2(A2): I can give you 2 eggs for 4 dollars.
-<p> <b style="word-space:2em">&nbsp;&nbsp;&nbsp;</b>[after 2 seconds after A1] Agent 2(A2): I can give you 2 eggs for 4 dollars.
+<p> <b style="word-space:2em">&nbsp;&nbsp;&nbsp;</b> [after 2 seconds after A1] Agent 2(A2): I can give you 2 eggs for 4 dollars.
 <p> <b style="word-space:2em">&nbsp;&nbsp;&nbsp;</b> [before 2 seconds after H] Agent 2 (A2): I can give you 2 eggs for 5 dollars.
 <p> <b style="word-space:2em">&nbsp;&nbsp;&nbsp;</b> [after 2 seconds after H] Agent 2 (A2): I can give you 2 eggs for 5 dollars.
 
