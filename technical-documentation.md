@@ -184,6 +184,16 @@ It is worthwhile to compare the test platform architecture of Figure 2 with the 
 To set up the test environment, you first need to get the HUMAINE platform running. There are two approaches:
 
 1. The all-in-one: Go to https://github.com/humaine-anac/application/releases/latest and you will find pre-built binaries for Windows, macOS, and Linux. You can just download and run it directly, without requiring installation of any dependencies. When you run it, it will start-up the environment-orchestrator, utility-generator, chat-ui, and human-ui and their related endpoints will be available.
+These binaries can be run as follows:
+
+Linux/Mac --
+Go to command prompt
+Navigate to the binary file
+You may need to change the permissions on the binary by typing “chmod +x” or “sudo chmod +x”
+Run the binary by typing “./humaine-linux” for linux or “./humaine-mac” for mac
+
+Windows --
+Double click the humaine-win.exe    
 
 2. The old-fashioned way: go to https://github.com/humaine-anac/, where you will find the repositories for the following components; do a git clone on each and follow the instructions in their individual READMEs to install and configure them:
   - environment-orchestrator
